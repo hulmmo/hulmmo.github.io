@@ -86,9 +86,8 @@ window.open("${linkUrl}");
 document.getElementById("step${i}").innerHTML = "Đã Xong!";
 document.getElementById("step${i}").disabled = true;
 ${i < linkCounter ? `document.getElementById("step${i + 1}").classList.add("active");
-document.getElementById("step${i + 1}").disabled = false;` : `document.getElementById("stepfinal").style.backgroundColor = "#4CAF50"; 
-document.getElementById("stepfinal").classList.add("button--completed");
-document.getElementById("stepfinal").disabled = false;`}
+document.getElementById("step${i + 1}").disabled = false;` : `document.getElementById("stepSubscribe").classList.add("active");
+document.getElementById("stepSubscribe").disabled = false;`}
 }
 `;
 }
@@ -131,7 +130,9 @@ margin: 10px 0;
 </div>
 <div class="step-container">
 ${links}
-<p>Bước ${linkCounter + 1}: <span style="font-family: helvetica;">Download File</span></p>
+<p>Bước ${linkCounter + 1}: <span style="font-family: helvetica;">Đăng Ký Kênh Gin TV Để Tải File</span></p>
+<button class="button" id="stepSubscribe" onclick="stepSubscribe()">Đăng Ký Kênh Gin TV</button>
+<p>Bước ${linkCounter + 2}: <span style="font-family: helvetica;">Download File</span></p>
 <button class="button--completed" id="stepfinal" onclick="stepfinal()" disabled>Download File</button>
 </div>
 <center>Mua Nick Liên Quân Chất Lượng, Uy Tín, Giá Rẻ Tại Đây &nbsp;<a href="https://shopacclienquan.vn/" target="_blank"><b>ShopAccLienQuan</b></a><span style="color: #2b00fe;">.VN</span></center>
@@ -147,6 +148,13 @@ ${links}
 </div>
 <script>
 ${linkScripts}
+async function stepSubscribe() {
+const youtubeUrl = "https://www.youtube.com/channel/UCdXcA-jdkIyw_i26gLL0PXA?sub_confirmation=1";
+window.open(youtubeUrl, "_blank");
+document.getElementById("stepSubscribe").innerHTML = "Đã Đăng Ký!";
+document.getElementById("stepSubscribe").disabled = true;
+document.getElementById("stepfinal").disabled = false;
+}
 async function stepfinal() {
 window.open("${fileLink}");
 document.getElementById("stepfinal").innerHTML = "Đã Xong!";
