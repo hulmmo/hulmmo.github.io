@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tạo Bài Viết</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-10 px-4">
+<div class="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-8">
+    <h1 class="text-4xl font-bold text-center text-gray-800 mb-4">📝 Tạo Bài Viết</h1>
+    <p class="text-center text-sm text-gray-500 mb-6">(Dự Phòng) -> Sau Khi Tạo Xong Bài Viết 👉 <a href="https://blogs.hul.io.vn/" target="_blank" class="text-blue-600 underline font-semibold">Tại Đây</a></p>
+    <div class="space-y-6">
+    <div class="flex justify-center gap-4 mt-6">
+        <a href="/taobaiviet/lienquan.html"><button class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Mặc Định</button></a>
+        <a href="/taobaiviet/lienquanduphong.html"><button class="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">Dự Phòng</button></a>
+    </div>
+    <div>
+    <label for="imageSrc" class="block font-medium text-gray-700 mb-1">Thumbnail Mod Skins:</label>
+    <input type="text" id="imageSrc" placeholder="Nhập Thumbnail Mod Skins..." class="w-full p-3 border border-gray-300 rounded-lg">
+    </div>
+    <div id="link-container" class="space-y-4">
+        <div class="link-item bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <label class="block font-medium text-gray-700 mb-1">Nội Dung Liên Kết:</label>
+            <input type="text" id="step1Text" class="link-text w-full p-2 border border-gray-300 rounded mb-2" placeholder="Nhập Nội Dung Liên Kết...">
+            <label class="block font-medium text-gray-700 mb-1">Liên Kết:</label>
+            <input type="text" id="link1" class="link-url w-full p-2 border border-gray-300 rounded" placeholder="Nhập Liên Kết...">
+        </div>
+    </div>
+    <button type="button" onclick="addLink()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">+ Thêm Liên Kết</button>
+    <div>
+    <label for="fileLink" class="block font-medium text-gray-700 mb-1">File Mod Skins:</label>
+    <input type="text" id="fileLink" placeholder="Nhập File Mod Skins..." class="w-full p-3 border border-gray-300 rounded-lg">
+    </div>
+    <div>
+    <label for="shopImageSrc" class="block font-medium text-gray-700 mb-1">Banner Shop Game:</label>
+    <input type="text" id="shopImageSrc" value="https://hul.io.vn/images/upload/setting/e7b2a2afa1d2293d9b3b45e1183cbbd1.jpg" class="w-full p-3 border border-gray-300 rounded-lg">
+    </div>
+    <button onclick="generateCode()" class="w-full bg-green-500 text-white py-3 rounded-xl text-lg hover:bg-green-600 transition shadow-md">🚀 Tạo Ngay</button>
+    </div>
+</div>
+<div class="w-full max-w-3xl mt-10">
+    <h2 class="text-2xl font-semibold mb-3 text-gray-800">📦 Nội Dung Được Tạo:</h2>
+    <textarea id="generatedCode" rows="20" class="w-full p-4 border border-gray-300 rounded-xl bg-gray-100 font-mono text-sm resize-none"></textarea>
+</div>
+<script>
+let linkCounter = 1;
+function addLink() {
+linkCounter++;
+const linkContainer = document.getElementById('link-container');
+const newLinkItem = document.createElement('div');
+newLinkItem.classList.add('link-item');
+newLinkItem.innerHTML = `
+<div class="link-item bg-gray-50 p-4 rounded-lg border border-gray-200">
+<label class="block font-medium text-gray-700 mb-1" for="step${linkCounter}Text">Nội Dung Liên Kết:</label>
+<input type="text" id="step${linkCounter}Text" class="link-text w-full p-2 border border-gray-300 rounded mb-2" placeholder="Nhập Nội Dung Liên Kết...">
+<label class="block font-medium text-gray-700 mb-1" for="link${linkCounter}">Liên Kết:</label>
+<input type="text" id="link${linkCounter}" class="link-url w-full p-2 border border-gray-300 rounded" placeholder="Nhập Liên Kết...">
+</div>
+`;
+linkContainer.appendChild(newLinkItem);
+}
+function generateCode() {
+const imageSrc = document.getElementById('imageSrc').value;
+const shopImageSrc = document.getElementById('shopImageSrc').value;
+const fileLink = document.getElementById('fileLink').value;
+let links = '';
+let linkScripts = '';  
+for (let i = 1; i <= linkCounter; i++) {
+const stepText = document.getElementById(`step${i}Text`).value;
+const linkUrl = document.getElementById(`link${i}`).value;
+links += `
+<p>Bước ${i}: <span style="font-family: helvetica;">${stepText}</span></p>
+<button class="button" ${i > 1 ? 'disabled' : ''} id="step${i}" onclick="step${i}()">${stepText}</button>
+`;
+linkScripts += `
+async function step${i}() {
+window.open("${linkUrl}");
+document.getElementById("step${i}").innerHTML = "Đã Xong!";
+document.getElementById("step${i}").disabled = true;
+${i < linkCounter ? `document.getElementById("step${i + 1}").classList.add("active");
+document.getElementById("step${i + 1}").disabled = false;` : `document.getElementById("stepSubscribe").classList.add("active");
+document.getElementById("stepSubscribe").disabled = false;`}
+}
+`;
+}
+const template = `<style>
+.download-container { text-align: center; margin-top: 20px; }
+.download-container h3 { margin-bottom: 10px; }
+.step-container { display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
+.step-container p { margin-bottom: 5px; font-size: 16px; font-weight: 700; }
+.step-container .button { background-color: #f44336; color: #fff; font-size: 16px; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; margin: 10px 0; }
+.step-container .button:hover { background-color: #ff6659; }
+.button--completed {
+background-color: #4caf50;
+color: #fff;
+font-size: 16px;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s ease;
+margin: 10px 0;
+}
+.button--completed:disabled {
+background-color: #6c757d;
+color: #fff;
+font-size: 16px;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s ease;
+margin: 10px 0;
+}
+</style>
+<div class="download-container">
+<h1><strong style="color: red; font-family: Helvetica; font-size: 24px;">NHẤN VÀO CÁC BƯỚC VÀ HOÀN THÀNH ĐỂ MỞ KHÓA LINK</strong></h1>
+</div>
+<div class="step-container">
+${links}
+<p>Bước ${linkCounter + 1}: <span style="font-family: helvetica;">Đăng Kí Và Bật Chuông Thông Báo Kênh</span></p>
+<button class="button" id="stepSubscribe" onclick="stepSubscribe()">Đăng Ký Kênh Gin TV</button>
+<p>Bước ${linkCounter + 2}: <span style="font-family: helvetica;">Download File</span></p>
+<button class="button--completed" id="stepfinal" onclick="stepfinal()" disabled>Download File</button>
+</div>
+<center>Mua Nick Liên Quân Chất Lượng, Uy Tín, Giá Rẻ Tại Đây &nbsp;<a href="https://shoplienquanmobile.com/" style="color: red;"><strong>ShopLienQuanMobile.Com</strong></a></center>
+<a href="https://shoplienquanmobile.com/" target="_blank"><img src="${shopImageSrc}"></a>
+<center>
+<p>Đăng Ký Kênh Ủng Hộ Gin TV Tại Đây:</p><br>
+<div class='g-ytsubscribe' data-channelid='UCdXcA-jdkIyw_i26gLL0PXA' data-layout='full'></div>
+<center style="text-align: justify;"><span style="font-family: helvetica; font-size: large;"><b><u>Mô Tả:</u></b></span></center>
+<center style="text-align: justify;">Liên Quân Mobile, Hay Còn Gọi Là Arena of Valor Ở Thị Trường Quốc Tế, Là Một Trò Chơi Di Động Thuộc Thể Loại MOBA (Multiplayer Online Battle Arena). Trong Trò Chơi Này, Người Chơi Sẽ Tham Gia Vào Các Trận Đấu Đội 5v5, Điều Khiển Các Nhân Vật Với Kỹ Năng Đặc Biệt Để Tiêu Diệt Đối Thủ Và Phá Hủy Các Công Trình Của Đối Phương. Trò Chơi Nổi Tiếng Với Lối Chơi Chiến Thuật, Hợp Tác Nhóm Và Các Trận Đấu Căng Thẳng.</center>
+</center>
+<div class="separator" style="clear: both; text-align: center;">
+<img height="360" width="640" src="${imageSrc}">
+</div>
+<script>
+${linkScripts}
+async function stepSubscribe() {
+const youtubeUrl = "https://www.youtube.com/channel/UCdXcA-jdkIyw_i26gLL0PXA?sub_confirmation=1";
+window.open(youtubeUrl, "_blank");
+document.getElementById("stepSubscribe").innerHTML = "Đã Đăng Ký!";
+document.getElementById("stepSubscribe").disabled = true;
+document.getElementById("stepfinal").disabled = false;
+}
+async function stepfinal() {
+window.open("${fileLink}");
+document.getElementById("stepfinal").innerHTML = "Đã Xong!";
+document.getElementById("stepfinal").disabled = true;
+}
+</scr`+`ipt>`;
+document.getElementById('generatedCode').value = template;
+}
+</script>
+</body>
+</html>
